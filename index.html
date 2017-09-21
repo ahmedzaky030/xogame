@@ -1,0 +1,126 @@
+<!doctype html>  
+<html lang="en">  
+    <head>
+        <link rel="stylesheet" href="./style.css" />
+    </head>
+    <body>
+        <h1>Hello World!</h1>
+        <div id="messages"></div>        
+        <hr/>
+        <div class="container">
+                <h1>Tic-Tac-Toe</h1>
+                <ul id="game" >
+                    <!-- first row -->
+                    <li data-pos="0,0"></li>
+                    <li data-pos="0,1"></li>
+                    <li data-pos="0,2"></li>
+                    <!-- second row -->
+                    <li data-pos="1,0"></li>
+                    <li data-pos="1,1"></li>
+                    <li data-pos="1,2"></li>
+                    <!-- third row -->
+                    <li data-pos="2,0"></li>
+                    <li data-pos="2,1"></li> 
+                    <li data-pos="2,2"></li>
+                </ul>
+                
+                <button id="reset-game">Reset Game</button>
+                
+                <!-- Game Messages -->
+                <div id="game-messages">
+                    <span class="player-x-win">Player One Wins</span>
+                    <span class="player-o-win">Player Two Wins</span>
+                    <span class="draw">Draw Game</span>
+                </div>
+                
+                <aside id="nfo">                                       
+                    <h2>Score Card</h2>
+                    <div id="score">
+                        Player 1: <span id="player-one-score">0</span> <br />
+                        Player 2: <span id="player-two-score">0</span> <br />
+                    </div>
+                </aside>
+            </div>
+
+
+        <hr/>
+        
+        <script src="/jquery/dist/jquery.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        
+        
+        <script>
+            
+        var socket = io.connect("http://localhost:4500");
+        socket.on("connect", function(data){
+             console.log("Connected");
+        });
+
+        socket.on("wait", function(data){
+            $("#messages").append("<span>"+data+"</span>");            
+        });
+
+        socket.on("startGame", function(data){
+            $("#messages").empty();
+            $("#messages").append("<span>"+data+"</span>");
+        })
+
+        $("li").click(function(){
+            var pos = this.getAttribute('data-pos').split(',');            
+            $(this).addClass("x").text("x");
+            socket.emit("played", pos)
+        })
+        
+        socket.on("played",function(data){
+            
+            if (data.Won) {
+                    $("#messages").text("The player has won , Play Again");
+            }
+
+            if (data.Draw) {
+                    $("#messages").text("The game is Draw , Play Again");
+            }
+
+            var elementQuery = 'li[data-pos='+'"'+data.pos[0]+','+data.pos[1]+'"]';
+            if(data.senderid === socket.id){
+                $(elementQuery).addClass("x").text("x");
+            }
+            else {
+                $(elementQuery).addClass("o").text("o");
+            }
+        })
+
+        $("#reset-game").click(function(){
+            $("li").each(function(i,elem){
+                $(this).removeClass("x").removeClass("o").text(null);
+            })
+
+            $("#messages").text("Let's Start");
+            socket.emit("restartGame");
+        })
+
+        socket.on("GameStart", function(data){
+            $("li").each(function(i,elem){
+                $(this).removeClass("x").removeClass("o").text(null);
+            })
+
+            $("#messages").text("Let's Start");
+            $("#player-one-score").text(data.first);
+            $("#player-two-score").text(data.second);
+        })
+
+        socket.on('messages', function(data) {
+                $("#future").append('<span>'+data+'</span><br/>');
+                $("#chat_input").val(null);
+        });
+        
+        socket.on("room1Messages", function(data){
+            $("#room1").css("display","block");
+            $("#room1 > div").append("<span>"+data+"</span><br/>");
+        })
+        
+            
+        </script>
+        <script src="./game.js" />
+    </body>
+</html>  

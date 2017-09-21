@@ -1,0 +1,25 @@
+{
+  "name": "xogame",
+  "version": "1.0.0",
+  "description": "X-O Game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahmedzaky030/xogame.git"
+  },
+  "author": "Ahmed Zaky",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ahmedzaky030/xogame/issues"
+  },
+  "homepage": "https://github.com/ahmedzaky030/xogame#readme",
+  "dependencies": {
+    "http": "0.0.0",
+    "jquery": "^3.2.1",
+    "nodemon": "^1.12.1"
+  }
+}
