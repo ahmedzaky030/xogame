@@ -9,8 +9,8 @@ app.use(express.static(__dirname + '/css'));
 app.get('/', function(req, res,next) {  
     res.sendFile(__dirname + '/index.html');
 });
-server.listen(4500 , function(){
-    console.log("Server start listening on port 4500.......");
+server.listen(process.env.PORT || 4500 , function(){
+    console.log("Server start listening on port"+http.address().port+".......");
 })
 var firstPlays = [];
 var secondPlays = [];
